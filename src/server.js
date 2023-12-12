@@ -11,6 +11,9 @@ app.set('views',path.join(__dirname,'views'))
 
 const { engine }  = require('express-handlebars')
 
+//Importar el metodo overrride
+const methodOverride = require('method-override');
+
 // Configuraciones extras
 //Establecer el path de la carpeta views
 app.set('views',path.join(__dirname, 'views'))
@@ -32,11 +35,15 @@ app.set('view engine','.hbs')
 //servidor va a trrabjar con la informacion en base a formularios0
 app.use(express.urlencoded({extended:false}))
 
+app.use(methodOverride('_method'))
+
 
 //RUTAS
 
 //Primera ruta
 app.use(require('./routers/index.routes'))
+app.use(require('./routers/portafolio.routes'))
+
 //Archivos estaticos
 //Definir archivo estaticos y publicos
 app.use(express.static(path.join(__dirname,'public')))
