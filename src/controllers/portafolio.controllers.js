@@ -19,23 +19,33 @@ const renderPortafolioForm = (req,res)=>{
     res.render('portafolio/newFormPortafolio')
 }
 //Metodo para guardar en la base de datos
-const createNewPortafolio = async (req,res)=>{
+const createNewPortafolio =async (req,res)=>{
     const {title, category,description} = req.body
     const newPortfolio = new Portfolio({title,category,description})
     await newPortfolio.save()
-    res.json({newPortfolio})
+    res.redirect('/portafolios')
 }
 //Metodo para actualizar el portafolios
-const renderEditPortafolioForm = (req,res)=>{
-    res.send('Formulario para editar un portafolio')
+const renderEditPortafolioForm = async (req,res)=>{
+    //Consulta del portafolio en BDD con el ID
+    const portfolio = await Portfolio.findById(req.params.id).lean()
+    //Mandar a la vista
+    res.render('portafolio/editPortfolio',{portfolio})
 }
 //Metodo para actualizar en la BD
-const updatePortafolio = (req,res)=>{
-    res.send('Editar un portafolio')
+const updatePortafolio = async (req,res)=>{
+    //Capturar los datos del body
+    const {title,category,description}= req.body
+    //Actualizar el portafolio en la base de datos
+    await Portfolio.findByIdAndUpdate(req.params.id,{title,category,description})
+    //Redireccionar
+    res.redirect('/portafolios')
 }
 //Metodo para eliminar los portafolios
-const deletePortafolio = (req,res)=>{
-    res.send('Eliminar un nuevo portafolio')
+const deletePortafolio = async (req,res)=>{
+    //Capturar el id del producto
+    await Portfolio.findByIdAndDelete(req.params.id)
+    res.redirect('/portafolios')
 }
 
 

@@ -2,8 +2,9 @@ const express = require('express')
 //Importancion de path
 const path = require('path')
 
-//Inicializamos
+//INICIALIZAMOS
 const app = express()
+require('./config/passport')
 
 //Configuraciones
 app.set('port',process.env.port || 3000)
@@ -13,6 +14,11 @@ const { engine }  = require('express-handlebars')
 
 //Importar el metodo overrride
 const methodOverride = require('method-override');
+
+//Importacion de passport
+const passport = require('passport');
+//Importacion de express-session
+const session = require('express-session');
 
 // Configuraciones extras
 //Establecer el path de la carpeta views
@@ -31,18 +37,36 @@ app.engine('.hbs',engine({
 //Establecer el motor de plantillas
 app.set('view engine','.hbs')
 
-//Middlewars
+//MIDLEWARS
 //servidor va a trrabjar con la informacion en base a formularios0
 app.use(express.urlencoded({extended:false}))
 
 app.use(methodOverride('_method'))
 
+//configurar la sesion del usuario
+app.use(session({ 
+    secret: 'secret',
+    resave:true,
+    saveUninitialized:true
+}));
+//Inicializar passportjs y session
+app.use(passport.initialize())
+app.use(passport.session())
 
-//RUTAS
+//VARIABLES GLOBALES
+//Crear una variable global
+app.use((req,res,next)=>{
+    res.locals.user = req.user?.name || null
+    //res.locals.user = req.user?.email || null
+    next()
+})
 
-//Primera ruta
+
+//---- RUTAS ----
+
 app.use(require('./routers/index.routes'))
 app.use(require('./routers/portafolio.routes'))
+app.use(require('./routers/user.routes'))
 
 //Archivos estaticos
 //Definir archivo estaticos y publicos
