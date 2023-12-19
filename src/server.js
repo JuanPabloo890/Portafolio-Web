@@ -6,9 +6,18 @@ const path = require('path')
 const app = express()
 require('./config/passport')
 
-//Configuraciones
+//Importar fileUpload
+const fileUpload = require('express-fileupload')
+
+//CONFIGURACIONES
 app.set('port',process.env.port || 3000)
 app.set('views',path.join(__dirname,'views'))
+
+//Establecer la carpeta temporal y el directorio
+app.use(fileUpload({
+    useTempFiles : true,
+    tempFileDir : './uploads'
+}));
 
 const { engine }  = require('express-handlebars')
 
