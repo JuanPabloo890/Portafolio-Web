@@ -30,7 +30,13 @@ const createNewPortafolio =async (req,res)=>{
     //Guardar en la base de datos
     if(!(req.files?.image)) return res.send("Se requiere una imagen")
     //Utilizar el metodo
-    await uploadImage(req.files.image.tempFilePath)
+    try{
+        await uploadImage(req.files.image.tempFilePath)
+
+    }catch(error){
+        console.log(error)
+
+    }
     await newPortfolio.save()
     res.redirect('/portafolios')
 }
